@@ -4,7 +4,7 @@ import sqlite3
 from pathlib import Path
 from datetime import datetime
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="app/templates", static_folder="app/static")
 metrics = PrometheusMetrics(app)
 DB_PATH = Path("campusfix.db")
 
