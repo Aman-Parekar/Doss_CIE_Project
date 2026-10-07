@@ -1,0 +1,2 @@
+CampusFix CIE project starter.
+Use for educational/college assessment purposes.

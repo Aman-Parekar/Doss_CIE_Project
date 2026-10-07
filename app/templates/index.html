@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CampusFix</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>CampusFix</h1>
+  <p>Smart Campus Complaint & Maintenance System</p>
+</header>
+
+<main>
+<section class="card">
+  <h2>Report a Campus Issue</h2>
+  <form method="post" action="/complaints">
+    <input name="title" placeholder="Issue title" required>
+    <select name="category" required>
+      <option value="">Category</option>
+      <option>Electrical</option><option>Wi-Fi</option><option>Classroom</option>
+      <option>Laboratory</option><option>Water</option><option>Cleaning</option>
+      <option>Other</option>
+    </select>
+    <input name="location" placeholder="Location (e.g. Lab 3)" required>
+    <textarea name="description" placeholder="Describe the issue" required></textarea>
+    <button type="submit">Submit Complaint</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Complaint Dashboard</h2>
+  {% if complaints %}
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>ID</th><th>Issue</th><th>Category</th><th>Location</th><th>Status</th><th>Update</th></tr></thead>
+    <tbody>
+    {% for c in complaints %}
+      <tr>
+        <td>#{{ c[0] }}</td><td>{{ c[1] }}</td><td>{{ c[2] }}</td><td>{{ c[3] }}</td>
+        <td><span class="status">{{ c[5] }}</span></td>
+        <td>
+          <form method="post" action="/complaints/{{ c[0] }}/status">
+            <select name="status">
+              {% for s in ["Reported","Assigned","In Progress","Resolved"] %}
+              <option {% if c[5] == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+            <button>Update</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p>No complaints yet. Add the first one above.</p>
+  {% endif %}
+</section>
+</main>
+</body>
+</html>
