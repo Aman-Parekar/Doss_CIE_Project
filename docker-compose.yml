@@ -1,0 +1,10 @@
+services:
+  campusfix:
+    build: .
+    container_name: campusfix
+    ports:
+      - "5000:5000"
+    volumes:
+      - campusfix-data:/app
+volumes:
+  campusfix-data:
