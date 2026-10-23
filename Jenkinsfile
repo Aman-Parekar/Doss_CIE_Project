@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -9,27 +8,30 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Source code retrieved using Jenkins SCM.'
+                checkout scm
             }
         }
 
-        stage('Check Python') {
+        stage('Check Environment') {
             steps {
-                bat 'where python'
                 bat 'python --version'
+                bat 'python -m pip --version'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'python -m pip install --user -r requirements.txt'
-                bat 'python -m pip install --user pytest'
+                // Using a virtual environment is cleaner and avoids permission issues
+                bat 'python -m venv venv'
+                bat 'venv\\Scripts\\python -m pip install --upgrade pip'
+                bat 'venv\\Scripts\\python -m pip install -r requirements.txt'
+                bat 'venv\\Scripts\\python -m pip install pytest'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'python -m pytest -v'
+                bat 'venv\\Scripts\\python -m pytest -v'
             }
         }
     }
