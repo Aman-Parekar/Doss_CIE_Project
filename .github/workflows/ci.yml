@@ -1,4 +1,4 @@
-name: CampusFix CI
+﻿name: CampusFix CI
 
 on:
   push:
@@ -12,13 +12,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt pytest
+
       - name: Syntax check
         run: python -m py_compile app.py
+
+      - name: Run application tests
+        run: python -m pytest tests/ -v
+
       - name: Build Docker image
         run: docker build -t campusfix:ci .
