@@ -1,34 +1,57 @@
 
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.13-slim'
+            args '--init'
+        }
+    }
+
+    options {
+        skipDefaultCheckout(true)
+        timestamps()
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Source code checked out by Jenkins SCM configuration'
+                checkout scm
+                echo 'Source code checked out from configured SCM.'
+            }
+        }
+
+        stage('Python Environment') {
+            steps {
+                sh 'python --version'
+                sh 'python -m pip --version'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat 'python --version'
-                bat 'python -m pip install -r requirements.txt'
+                sh 'python -m pip install --no-cache-dir -r requirements.txt'
+                sh 'python -m pip install --no-cache-dir pytest'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat 'python -m pytest -v'
+                sh 'python -m pytest -v'
             }
         }
     }
 
     post {
         success {
-            echo 'CampusFix CI pipeline completed successfully!'
+            echo 'SUCCESS: CampusFix CI pipeline completed.'
         }
+
         failure {
-            echo 'CampusFix CI pipeline failed. Check the console output.'
+            echo 'FAILURE: Check the failed stage in Console Output.'
+        }
+
+        always {
+            echo 'CampusFix CI pipeline execution finished.'
         }
     }
 }
